@@ -1,2 +1,6 @@
 /.git
 /CancerDetect_Flask_App.ipynb
+.ipynb_checkpoints/myenv-checkpoint.yml
+.ipynb_checkpoints/score_and_track-checkpoint.py
+.ipynb_checkpoints/app-checkpoint.py
+/.ipynb_checkpoints
