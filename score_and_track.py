@@ -11,8 +11,8 @@ def init():
     
     model_file = Model.get_model_path('breastcancerdetect_fastai2')
     model_path = os.path.dirname(model_file)
-    #print(model_path)
-    learn = load_learner(model_path)
+
+    #learn = load_learner(model_path)
     
     
 def run(raw_data):
@@ -23,5 +23,6 @@ def run(raw_data):
     
     # make prediction
     img = open_image(os.path.join(os.getcwd(),"score.jpg"))
-    result = learn.predict(img)
+    #result = learn.predict(img)
+    result = 'Test,1'
     return json.dumps({'class':str(result[0]), 'probs':result[2].data[1].item()})
