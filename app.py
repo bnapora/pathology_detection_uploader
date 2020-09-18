@@ -9,14 +9,14 @@ import base64
 import requests
 import base64
 
-
 # Import fast.ai Library
 import torch
-from fastai2.basics import *
-from fastai2.callback.all import *
-from fastai2.vision.all import *
-from fastai2.vision.core import *
-from fastai2.vision.widgets import *
+from fastai import *
+from fastai.basics import *
+from fastai.callback.all import *
+from fastai.vision.all import *
+from fastai.vision.core import *
+from fastai.vision.widgets import *
 
 # Flask utils
 from flask import Flask, redirect, url_for, render_template, request
