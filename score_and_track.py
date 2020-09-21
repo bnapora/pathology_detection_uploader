@@ -1,8 +1,10 @@
 import json
 import torch
 import os, base64
+import fastai
 from fastai import *
-from fastai.vision import *
+from fastai.vision.all import *
+from fastai.callback.all import *
 from azureml.core.model import Model
 
 #from azureml.monitoring import ModelDataCollector
@@ -10,10 +12,10 @@ from azureml.core.model import Model
 def init():
     global learn
     
-    model_file = Model.get_model_path('breastcancerdetect')
+    model_file = Model.get_model_path('breastcancerdetect',3)
     model_path = os.path.dirname(model_file)
 
-    learn = load_learner(model_path)
+    learn = load_learner(model_file)
     
     
 def run(raw_data):
@@ -23,7 +25,7 @@ def run(raw_data):
         f.write(base64_bytes)
     
     # make prediction
-    img = open_image(os.path.join(os.getcwd(),"score.jpg"))
+    #img = open_image(os.path.join(os.getcwd(),"score.jpg"))
     #result = learn.predict(img)
     result = 'Test,1'
     # return json.dumps({'class':str(result[0]), 'probs':result[2].data[1].item()})
