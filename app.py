@@ -60,7 +60,7 @@ def encode(img):
 def model_predict(img):
     #img = Image.open(BytesIO(img))
     pred_class,pred_idx,outputs = learn.predict(img)
-    pred_class = change_pred_totext(pred_class)
+    # pred_class = change_pred_totext(pred_class)
     formatted_outputs = ["{:.1f}%".format(value) for value in [x * 100 for x in torch.nn.functional.softmax(outputs, dim=0)]]
     pred_probs = sorted(
             zip(learn.dls.vocab, map(str, formatted_outputs)),
