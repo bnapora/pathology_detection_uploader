@@ -20,16 +20,35 @@ from fastai.vision.core import *
 
 # Flask utils
 from flask import Flask, redirect, url_for, render_template, request
+#from PIL import Image as pilImage
 
 # Define a flask app
 app = Flask(__name__)
-scoring_uri = 'http://51a0a868-51da-41ec-8c91-b7220daa47fa.eastus.azurecontainer.io/score'
-scoring_uri_local = 'http://localhost:6789/score'
-headers = {'Content-Type': 'application/json;charset-UTF-8'}
 
-NAME_OF_FILE = 'export.pkl' # Default convention for Fastai model, test before changing
+NAME_OF_FILE = 'export.pkl' # Name of your exported file
 PATH_TO_MODELS_DIR = Path() # by default just use /models in root dir
 classes = ['Negative','Tumor']
+
+# Include functions from model class
+def get_x(r): 
+    pathstr = str(path)
+    idstr = str(r['id'])
+    imgpathstr = pathstr + '/train/' + idstr + '.tif'
+    return imgpathstr
+def get_y(r): return r['label']
+
+def change_pred_totext(preds):
+    if (preds==1):
+        predvalue = 'Positive'
+    else:
+        predvalue = 'Negative'
+    return predvalue
+
+def setup_model_pth(path_to_pth_file, learner_name_to_load, classes):
+    learn = load_learner(path_to_pth_file/'export.pkl')
+    return learn
+
+learn = setup_model_pth(PATH_TO_MODELS_DIR, NAME_OF_FILE, classes)
 
 def encode(img):
     img = Image.open(BytesIO(img))
@@ -39,23 +58,20 @@ def encode(img):
     return base64.b64encode(buff.getvalue()).decode("utf-8")
 	
 def model_predict(img):
-    img_data = preprocess(img)
-    preds_raw = requests.post(scoring_uri, img_data, headers=headers)
-    preds_str = preds_raw.json()
-    preds_dict = json.loads(preds_str)
-    pred_class = preds_dict['class']
-    pred_probs = preds_dict['probs']
-    
+    #img = Image.open(BytesIO(img))
+    pred_class,pred_idx,outputs = learn.predict(img)
+    # pred_class = change_pred_totext(pred_class)
+    formatted_outputs = ["{:.1f}%".format(value) for value in [x * 100 for x in torch.nn.functional.softmax(outputs, dim=0)]]
+    pred_probs = sorted(
+            zip(learn.dls.vocab, map(str, formatted_outputs)),
+            key=lambda p: p[1],
+            reverse=True
+        )
+   
     img_data = encode(img)
-       
+    result = "Testing"
     result = {"class":pred_class, "probs":pred_probs, "image":img_data}
     return render_template('result.html', result=result)
-
-def preprocess(image):
-    test = image
-    data = str(base64.b64encode(test), encoding='utf-8')  
-    input_data = json.dumps({'data': data})
-    return input_data
    
 
 @app.route('/', methods=['GET', "POST"])
@@ -64,18 +80,17 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/upload', methods=["GET", "POST"])
+@app.route('/upload', methods=["POST", "GET"])
 def upload():
     if request.method == 'POST':
         # Get the file from post request
         img = request.files['file'].read()
         if img != None:
-            # Make prediction
+        # Make prediction
             preds = model_predict(img)
             return preds
     return 'OK'
-    
-
+	
 @app.route("/classify-url", methods=["POST", "GET"])
 def classify_url():
     if request.method == 'POST':

@@ -1,4 +1,4 @@
 {
-    "python.pythonPath": "C:\\ProgramData\\Anaconda3\\envs\\machinelearningnotebooks\\python.exe",
+    "python.pythonPath": "/home/bnapora/miniconda3/envs/pathuploader/bin/python",
     "python.dataScience.jupyterServerURI": "local"
 }
