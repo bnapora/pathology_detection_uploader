@@ -1,4 +1,4 @@
 {
-    "python.pythonPath": "/home/bnapora/miniconda3/envs/pathuploader/bin/python",
+    "python.pythonPath": "C:\\ProgramData\\Anaconda3\\envs\\pathdetectupload_local\\python.exe",
     "python.dataScience.jupyterServerURI": "local"
 }
