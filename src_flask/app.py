@@ -8,21 +8,15 @@ from io import BytesIO
 import base64
 import requests
 import base64
-
-# Import fast.ai Library
-import torch
-from fastai import *
-from fastai.basics import *
-from fastai.callback.all import *
-from fastai.vision.all import *
-from fastai.vision.core import *
-
+import json
+from PIL import Image
 
 # Flask utils
 from flask import Flask, redirect, url_for, render_template, request
 
 # Define a flask app
 app = Flask(__name__)
+
 scoring_uri = 'http://51a0a868-51da-41ec-8c91-b7220daa47fa.eastus.azurecontainer.io/score'
 scoring_uri_local = 'http://localhost:6789/score'
 
